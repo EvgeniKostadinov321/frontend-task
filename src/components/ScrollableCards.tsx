@@ -1,4 +1,4 @@
-import { Grid } from '@mui/joy'
+import { Grid, Box, CircularProgress, Typography } from '@mui/joy'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import React, { useCallback, useEffect, useState } from 'react'
 import { PageRequest } from '../services/dto/page.request.ts'
@@ -60,22 +60,66 @@ export default function ScrollableCards<T>(props: {
     }
 
     return (
-        <Grid container spacing={2}>
-            {loading && props.skeletonMap(null, 0)}
-            <InfiniteScroll
-                dataLength={cards.length}
-                next={loadMore}
-                hasMore={hasMore}
-                scrollableTarget="scroll"
-                loader={<h4>Loading...</h4>}
-                endMessage={
-                    <p style={{ textAlign: 'center' }}>
-                        <b>There are no more items available...</b>
-                    </p>
-                }
+        <Box sx={{ 
+            width: '100%',
+            px: { xs: 1, sm: 2, md: 3 },
+            py: 2
+        }}>
+            <Grid 
+                container 
+                spacing={{ xs: 1, sm: 2, md: 3 }}
+                sx={{ 
+                    width: '100%',
+                    margin: 0,
+                    '--Grid-columnSpacing': { xs: '8px', sm: '16px', md: '24px' },
+                    '--Grid-rowSpacing': { xs: '8px', sm: '16px', md: '24px' },
+                }}
             >
-                {cards}
-            </InfiniteScroll>
-        </Grid>
+                <InfiniteScroll
+                    dataLength={cards.length}
+                    next={loadMore}
+                    hasMore={hasMore}
+                    scrollableTarget="scroll"
+                    style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        width: '100%',
+                        overflow: 'visible'
+                    }}
+                    loader={
+                        <Box sx={{ 
+                            width: '100%', 
+                            display: 'flex', 
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            p: 4
+                        }}>
+                            <CircularProgress size="lg" />
+                        </Box>
+                    }
+                    endMessage={
+                        <Box sx={{
+                            width: '100%',
+                            p: 4,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Typography 
+                                level="body-lg"
+                                sx={{ 
+                                    color: 'neutral.500',
+                                    fontStyle: 'italic'
+                                }}
+                            >
+                                No more banners to load
+                            </Typography>
+                        </Box>
+                    }
+                >
+                    {cards}
+                </InfiniteScroll>
+            </Grid>
+        </Box>
     )
 }
