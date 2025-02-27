@@ -4,12 +4,15 @@ import { Button, DialogActions, DialogContent, DialogTitle, ModalClose } from '@
 import Divider from '@mui/joy/Divider'
 import { WarningRounded } from '@mui/icons-material'
 
-export default function ConfirmModal(props: {
+interface ConfirmModalProps {
     open: boolean
     onClose: () => void
-    confirm?: () => void
+    confirm: (deleteItem: (id: string) => void) => void
     action: string
-}) {
+    deleteItemFunction?: (id: string) => void  // Add this prop
+}
+
+export default function ConfirmModal(props: ConfirmModalProps) {
     return (
         <Modal
             open={props.open}
@@ -30,10 +33,10 @@ export default function ConfirmModal(props: {
                     <Button
                         variant="solid"
                         onClick={() => {
-                            props.onClose()
-                            if (props.confirm) {
-                                props.confirm()
+                            if (props.confirm && props.deleteItemFunction) {
+                                props.confirm(props.deleteItemFunction)
                             }
+                            props.onClose()
                         }}
                     >
                         Delete
