@@ -80,6 +80,12 @@ export default function Banners() {
                 )}
                 skeletonMap={(_, i) => <BannerCard key={'skeleton-' + i} />}
                 onDelete={confirmDelete}
+                emptyStateProps={{
+                    title: "No Banners Yet",
+                    description: "Create your first banner to get started. Banners can be used to display promotions, announcements, or important information on your website.",
+                    actionLabel: "Create First Banner",
+                    actionPath: "/banners/create"
+                }}
             />
             <FAB />
             <ConfirmModal

@@ -7,6 +7,7 @@ import { PageDataProvider } from './context/page-data/PageDataProvider.tsx'
 import { NotificationProvider } from './context/notification/NotificationProvider.tsx'
 import Banner from './pages/banners/Banner.tsx'
 import BannerCreate from './pages/banners/BannerCreate.tsx'
+import WelcomeGuide from './components/WelcomeGuide'
 
 export default function App() {
     return (
@@ -18,6 +19,7 @@ export default function App() {
             <NotificationProvider>
                 <PageDataProvider>
                     <BrowserRouter>
+                        <WelcomeGuide />
                         <Routes>
                             <Route element={<Layout />}>
                                 <Route

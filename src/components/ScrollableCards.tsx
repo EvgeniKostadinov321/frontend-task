@@ -3,12 +3,20 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import React, { useCallback, useEffect, useState } from 'react'
 import { PageRequest } from '../services/dto/page.request.ts'
 import { PageResponse } from '../services/dto/page.response.ts'
+import EmptyState from './EmptyState'
+import { motion } from 'framer-motion' // Add missing import
 
 export default function ScrollableCards<T>(props: {
     loadMore: (page: PageRequest) => Promise<PageResponse<T> | undefined>
     mapCard: (value: T, deleteItem: (id: string) => void) => React.JSX.Element
     skeletonMap: (_: any, index: number) => React.JSX.Element
     onDelete: (deleteItem: (id: string) => void) => Promise<void>
+    emptyStateProps?: {
+        title: string;
+        description: string;
+        actionLabel: string;
+        actionPath: string;
+    }
 }) {
     const [cards, setCards] = useState<React.JSX.Element[]>([])
     const [loading, setLoading] = useState(true)
@@ -80,79 +88,92 @@ export default function ScrollableCards<T>(props: {
         loadBanners().catch((reason) => console.error(reason))
     }
 
+    // Check if there are no banners
+    const isEmpty = !loading && cards.length === 0
+
     return (
         <Box sx={{ 
             width: '100%',
-            px: { xs: 0, sm: 0, md: 0, lg: 0 },  // Removed padding here since we added it to the parent
+            px: { xs: 0, sm: 0, md: 0, lg: 0 },
             py: 2
         }}>
-            <InfiniteScroll
-                dataLength={cards.length}
-                next={loadMore}
-                hasMore={hasMore}
-                scrollableTarget="scroll"
-                style={{
-                    width: '100%',
-                    overflow: 'visible'
-                }}
-                loader={loading && (
-                    <Box sx={{ 
-                        width: '100%', 
-                        display: 'flex', 
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        p: 4
-                    }}>
-                        <CircularProgress size="lg" />
-                    </Box>
-                )}
-                endMessage={
-                    <Box sx={{
+            {isEmpty && props.emptyStateProps ? (
+                <EmptyState {...props.emptyStateProps} />
+            ) : (
+                <InfiniteScroll
+                    dataLength={cards.length}
+                    next={loadMore}
+                    hasMore={hasMore}
+                    scrollableTarget="scroll"
+                    style={{
                         width: '100%',
-                        p: 4,
-                        mt: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderTop: '1px solid',
-                        borderColor: 'divider'
-                    }}>
-                        <Typography 
-                            level="body-lg"
+                        overflow: 'visible'
+                    }}
+                    loader={loading && (
+                        <Box sx={{ 
+                            width: '100%', 
+                            display: 'flex', 
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            p: 4
+                        }}>
+                            <CircularProgress size="lg" />
+                        </Box>
+                    )}
+                    endMessage={
+                        <Box sx={{
+                            width: '100%',
+                            p: 4,
+                            mt: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderTop: '1px solid',
+                            borderColor: 'divider'
+                        }}>
+                            <Typography 
+                                level="body-lg"
+                                sx={{ 
+                                    color: 'neutral.500',
+                                    fontStyle: 'italic'
+                                }}
+                            >
+                                No more banners to load
+                            </Typography>
+                        </Box>
+                    }
+                >
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <Grid 
+                            container 
+                            spacing={{ xs: 1, sm: 1.5, md: 2, lg: 3 }}  // Reduced spacing on medium screens
+                            columns={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}
                             sx={{ 
-                                color: 'neutral.500',
-                                fontStyle: 'italic'
+                                width: '100%',
+                                margin: 0,
+                                '--Grid-columnSpacing': { 
+                                    xs: '8px', 
+                                    sm: '12px', 
+                                    md: '16px',  // Reduced from 24px
+                                    lg: '24px' 
+                                },
+                                '--Grid-rowSpacing': { 
+                                    xs: '12px', 
+                                    sm: '16px', 
+                                    md: '20px',  // Reduced from 28px
+                                    lg: '28px' 
+                                },
                             }}
                         >
-                            No more banners to load
-                        </Typography>
-                    </Box>
-                }
-            >
-                <Grid 
-                    container 
-                    spacing={{ xs: 1, sm: 1.5, md: 2, lg: 3 }}  // Reduced spacing on medium screens
-                    columns={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}
-                    sx={{ 
-                        width: '100%',
-                        margin: 0,
-                        '--Grid-columnSpacing': { 
-                            xs: '8px', 
-                            sm: '12px', 
-                            md: '16px',  // Reduced from 24px
-                            lg: '24px' 
-                        },
-                        '--Grid-rowSpacing': { 
-                            xs: '12px', 
-                            sm: '16px', 
-                            md: '20px',  // Reduced from 28px
-                            lg: '28px' 
-                        },
-                    }}
-                >
-                    {cards}
-                </Grid>
-            </InfiniteScroll>
+                            {cards}
+                        </Grid>
+                    </motion.div>
+                </InfiniteScroll>
+            )}
         </Box>
     )
 }
