@@ -6,11 +6,13 @@ import BannerCard from '../../components/banner/BannerCard.tsx'
 import FAB from '../../components/FAB.tsx'
 import { Box, Typography } from '@mui/joy'
 import ConfirmModal from '../../components/ConfirmModal'
+import { useNotification } from '../../context/notification/notification.context.ts'
 
 export default function Banners() {
     const [deleteId, setDeleteId] = useState<string | null>(null)
     const [deleteItemFunction, setDeleteItemFunction] = useState<((id: string) => void) | undefined>()
     const { setPageData } = usePageData()
+    const { showNotification } = useNotification()
 
     useEffect(() => {
         setPageData({ title: 'Banners' })
@@ -26,8 +28,10 @@ export default function Banners() {
             try {
                 await BannerService.deleteBanner(deleteId)
                 deleteItem(deleteId) // Only remove from UI after successful deletion
+                showNotification('Banner deleted successfully', 'success')
             } catch (error) {
                 console.error('Failed to delete banner:', error)
+                showNotification('Failed to delete banner', 'error')
             }
             setDeleteId(null)
             setDeleteItemFunction(undefined)
@@ -35,17 +39,36 @@ export default function Banners() {
     }
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box 
+            sx={{ 
+                width: '100%',
+                maxWidth: { xs: '100%', sm: '100%', md: '95%', lg: '1400px' },  // Adjusted for better fit on laptops
+                margin: '0 auto',
+                px: { xs: 1, sm: 1, md: 2 }  // Added horizontal padding
+            }}
+        >
             <Box 
                 sx={{ 
-                    mb: 2,
+                    mb: { xs: 2, md: 3 },
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 2
+                    justifyContent: 'space-between',
+                    gap: 2,
+                    borderBottom: '1px solid',
+                    borderColor: 'divider',
+                    pb: 2
                 }}
             >
                 <Typography level="h2">Banner Gallery</Typography>
+                
+                {/* Optional: Add filter/sort controls here */}
+                {/* <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button variant="soft" size="sm" startDecorator={<FilterList />}>
+                        Filter
+                    </Button>
+                </Box> */}
             </Box>
+            
             <ScrollableCards
                 loadMore={page => BannerService.getBanners(page)}
                 mapCard={(banner, deleteItem) => (
@@ -56,7 +79,7 @@ export default function Banners() {
                     />
                 )}
                 skeletonMap={(_, i) => <BannerCard key={'skeleton-' + i} />}
-                onDelete={confirmDelete}  // Add this prop
+                onDelete={confirmDelete}
             />
             <FAB />
             <ConfirmModal

@@ -10,27 +10,32 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
     const navigate = useNavigate()
 
     return (
-        <Grid xs={12} sm={6} md={4} lg={3}>
+        <Grid xs={12} sm={6} md={6} lg={4} xl={3}>
             <Card
                 variant="outlined"
                 sx={{
-                    minHeight: 400,
+                    height: '100%',
+                    minHeight: { xs: 380, md: 420 },
+                    maxWidth: { xs: '100%', sm: '100%', md: '450px', lg: '400px' },
+                    width: '100%',
+                    margin: '0 auto',
                     display: 'flex',
                     flexDirection: 'column',
                     transition: 'all 0.2s ease-in-out',
                     backgroundColor: 'background.surface',
+                    boxShadow: 'sm',
                     '&:hover': {
                         transform: 'translateY(-4px)',
-                        boxShadow: 'lg',
+                        boxShadow: 'md',
                         borderColor: 'primary.300',
                     },
                 }}
             >
-                <CardOverflow sx={{ mb: 1 }}>
+                <CardOverflow>
                     <AspectRatio 
                         ratio="16/9"
                         sx={{ 
-                            minHeight: 200,
+                            minHeight: { xs: 180, md: 200, lg: 220 },
                             borderBottom: '1px solid',
                             borderColor: 'divider'
                         }}
@@ -39,10 +44,11 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                     </AspectRatio>
                 </CardOverflow>
                 
-                <Box sx={{ p: 2, flex: 1 }}>
+                <Box sx={{ p: { xs: 2, md: 2.5 }, flex: 1 }}>
                     <Stack spacing={2}>
                         <Typography
                             level="title-md"
+                            fontWeight="bold"
                             sx={{
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
@@ -56,23 +62,29 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                             </Skeleton>
                         </Typography>
                         
-                        <Typography level="body-sm" color="neutral">
+                        <Typography 
+                            level="body-sm" 
+                            color="neutral"
+                            sx={{
+                                fontSize: { md: '0.875rem', lg: '0.9rem' }
+                            }}
+                        >
                             <Skeleton loading={!props.banner} variant="text">
-                                Click to visit the banner destination
+                                Banner destination URL
                             </Skeleton>
                         </Typography>
                     </Stack>
                 </Box>
 
                 <CardActions sx={{ 
-                    p: 2,
+                    p: { xs: 2, md: 2.5 },
                     borderTop: '1px solid',
                     borderColor: 'divider',
                     bgcolor: 'background.level1',
-                    gap: 1 
+                    gap: { xs: 1, md: 1.5 }
                 }}>
                     <IconButton
-                        variant="plain"
+                        variant="soft"
                         color="danger"
                         size="sm"
                         onClick={props.delete}
@@ -83,7 +95,7 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                         <Delete />
                     </IconButton>
                     <IconButton
-                        variant="plain"
+                        variant="soft"
                         color="primary"
                         size="sm"
                         onClick={() => navigate(`/banners/${props.banner?.id}`)}
@@ -94,7 +106,7 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                         <Edit />
                     </IconButton>
                     <IconButton
-                        variant="plain"
+                        variant="soft"
                         color="neutral"
                         size="sm"
                         component="a"

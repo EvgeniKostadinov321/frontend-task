@@ -83,7 +83,7 @@ export default function ScrollableCards<T>(props: {
     return (
         <Box sx={{ 
             width: '100%',
-            px: { xs: 1, sm: 2, md: 3 },
+            px: { xs: 0, sm: 0, md: 0, lg: 0 },  // Removed padding here since we added it to the parent
             py: 2
         }}>
             <InfiniteScroll
@@ -110,9 +110,12 @@ export default function ScrollableCards<T>(props: {
                     <Box sx={{
                         width: '100%',
                         p: 4,
+                        mt: 2,
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        borderTop: '1px solid',
+                        borderColor: 'divider'
                     }}>
                         <Typography 
                             level="body-lg"
@@ -128,13 +131,23 @@ export default function ScrollableCards<T>(props: {
             >
                 <Grid 
                     container 
-                    spacing={{ xs: 1, sm: 2, md: 3 }}
-                    columns={{ xs: 12, sm: 12, md: 12, lg: 12 }}
+                    spacing={{ xs: 1, sm: 1.5, md: 2, lg: 3 }}  // Reduced spacing on medium screens
+                    columns={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}
                     sx={{ 
                         width: '100%',
                         margin: 0,
-                        '--Grid-columnSpacing': { xs: '8px', sm: '16px', md: '24px' },
-                        '--Grid-rowSpacing': { xs: '8px', sm: '16px', md: '24px' },
+                        '--Grid-columnSpacing': { 
+                            xs: '8px', 
+                            sm: '12px', 
+                            md: '16px',  // Reduced from 24px
+                            lg: '24px' 
+                        },
+                        '--Grid-rowSpacing': { 
+                            xs: '12px', 
+                            sm: '16px', 
+                            md: '20px',  // Reduced from 28px
+                            lg: '28px' 
+                        },
                     }}
                 >
                     {cards}
